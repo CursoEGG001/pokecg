@@ -1,0 +1,131 @@
+table, th, td {
+    text-shadow:
+        5px 3px #225a8e,
+        1px 0 1em grey,
+        3px 0 0.2em gray;
+    border-collapse:separate;
+    border: lightsteelblue 3px outset;
+    background: linear-gradient(
+        135deg,
+        #e89292,
+        #e39c62,
+        #edde8a,
+        #a7eb8c,
+        #83e3d4,
+        #8a98df,
+        #ccafed,
+        #ea7ad2,
+        #ca8787
+        );
+    position: relative;
+    top: -2px;
+    left: -2px;
+    background-size: 1600%;
+    filter: blur(.032rem);
+    -webkit-filter: blur(.027em);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing-button-85 58s ease-in infinite;
+    border-radius: 4px;
+}
+
+.button-30 {
+    align-items: center;
+    appearance: icon;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: "Liberation Mono",monospace;
+    height: 48px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 12px;
+    padding-right: 12px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform;
+    font-size: 18px;
+}
+
+.button-30:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #646cff 0 -3px 0 inset;
+}
+
+.button-30:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.button-30:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(4px);
+}
+
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes glowing-button-85 {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 1600% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
