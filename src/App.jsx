@@ -10,17 +10,21 @@ export default function App() {
     const [cntOtro, setCntOtro] = useState(0)
     const [seCompara, setSeCompara] = useState(0)
     const [poke, setPoke] = useState([])
-    const [unNombre, setUnNombre] = useState("")
+    const [unNombre, setUnNombre] = useState("151")
+
+    let mat = []
+
     useEffect(() => {
         // Llamamos a la API Pokeapi
         const charactersAPI = PokedexServicio.getAllCharacters()
                 .then((data) => {
                     setPoke(data.results)
-                    setUnNombre(data.results[0].name)
+                    mat = data.results
+                    setUnNombre(mat.filter((d, i) => i == elije).name)
                 })
                 .catch((error) => console.log(error));
 
-    }, [poke]);
+    }, []);
 
     function diceElBoton(evento) {
 
@@ -45,7 +49,7 @@ export default function App() {
         <tbody>
             <tr>
                 <td>
-        <CardPresenter info={poke !== null ? "moltres" : "pikachu" } juega="1" opcion={seCompara}/>
+        <CardPresenter info={unNombre} juega="1" opcion={seCompara}/>
     </td>
     
     <td>
@@ -69,12 +73,12 @@ export default function App() {
         </td>
     
         <td>
-            <button name="hp" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
-            <button name="attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
-            <button name="defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
-            <button name="special-attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro} </button><br/>
-            <button name="special-defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro} </button><br/>
-            <button name="speed" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
+            <button name="hp" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, HP, {cntOtro}</button><br/>
+            <button name="attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Ataque, {cntOtro}</button><br/>
+            <button name="defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Defensa, {cntOtro}</button><br/>
+            <button name="special-attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Ataque Especial, {cntOtro} </button><br/>
+            <button name="special-defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Defensa Especial, {cntOtro} </button><br/>
+            <button name="speed" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Velocidad, {cntOtro}</button><br/>
         </td>
     
         <td  onClick={() => setCntOtro(cntOtro + 1)} key="2">
@@ -88,9 +92,7 @@ export default function App() {
     </>)
 }
 
-function Cartas(
-{item, mostrar}
-) {
+function Cartas( {item, mostrar}) {
 
     const resultado = item.filter((dato, indice) => indice >= mostrar && indice < (mostrar + 20)).map((a) => (
                 <li key={a.url + mostrar}>
