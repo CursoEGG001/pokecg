@@ -1,7 +1,8 @@
 import './App.css'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import PokedexServicio from './services/pokemon-api'
 import CardPresenter from './components/public/CardPresenter'
+
 
 export default function App() {
 
@@ -18,6 +19,7 @@ export default function App() {
                     setUnNombre(data.results[0].name)
                 })
                 .catch((error) => console.log(error));
+
     }, [poke]);
 
     function diceElBoton(evento) {
@@ -43,7 +45,7 @@ export default function App() {
         <tbody>
             <tr>
                 <td>
-        <CardPresenter info={poke !== null ? "moltres" : "pikachu" } juega="1"/>
+        <CardPresenter info={poke !== null ? "moltres" : "pikachu" } juega="1" opcion={seCompara}/>
     </td>
     
     <td>
@@ -51,10 +53,13 @@ export default function App() {
     </td>
     
     <td>
-        Espacio2
-    </td></tr>
+    
+    <CardPresenter info={poke !== null ? "pikachu" : "moltres" } juega="2" opcion={seCompara}/>
+    
+    </td>
+    </tr>
     <tr>
-        <td onClick={() => setElije(elije + 1) }key="1">
+        <td onClick={() => setElije(elije + 1) } key="1">
             <ul>
                 <Cartas 
                     item={poke}
@@ -62,20 +67,19 @@ export default function App() {
                     />
             </ul>
         </td>
+    
         <td>
-            <button name="hp" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
-            <button name="attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
-            <button name="defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
-            <button name="special-attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
-            <button name="special-defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
-            <button name="speed" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije},{seCompara},{cntOtro}</button><br/>
+            <button name="hp" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
+            <button name="attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
+            <button name="defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
+            <button name="special-attack" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro} </button><br/>
+            <button name="special-defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro} </button><br/>
+            <button name="speed" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, {seCompara}, {cntOtro}</button><br/>
         </td>
+    
         <td  onClick={() => setCntOtro(cntOtro + 1)} key="2">
             <ul>
-                <Cartas 
-                    item={poke}
-                    mostrar={cntOtro}
-                    />
+                <Cartas item={poke} mostrar={cntOtro}/>
             </ul>
         </td>
     </tr>
@@ -84,7 +88,9 @@ export default function App() {
     </>)
 }
 
-function Cartas( {item, mostrar}) {
+function Cartas(
+{item, mostrar}
+) {
 
     const resultado = item.filter((dato, indice) => indice >= mostrar && indice < (mostrar + 20)).map((a) => (
                 <li key={a.url + mostrar}>

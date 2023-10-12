@@ -26,7 +26,7 @@ export default function CardPresenter(props) {
                 <h3>{pokenombre}</h3>
                 <img src={imagen} alt={pokenombre} height="96px" width="72px"/>
                 <ul>
-                    {dat.map(
+                    {dat.filter((laOpcion)=>laOpcion.stat.name == props.opcion).map(
                                         d => <li key={d.stat.url}>{d.stat.name}:{d.base_stat}</li>
                                 )}
                 </ul>

@@ -29,6 +29,27 @@ table, th, td {
     border-radius: 4px;
 }
 
+li {
+    background: linear-gradient(
+        45deg,
+        #e8929222,
+        #e39c6224,
+        #edde8a24,
+        #a7eb8c27,
+        #83e3d427,
+        #8a98df27,
+        #ccafed32,
+        #ea7ad232,
+        #ca878742
+        );
+    position: relative;
+    top: -2px;
+    left: -2px;
+    background-size: 400%;
+    animation: glowing-button-85 51s ease-in infinite;
+    border-radius: 0.17rem;
+}
+
 .button-30 {
     align-items: center;
     appearance: icon;
