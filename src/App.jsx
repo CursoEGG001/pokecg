@@ -11,6 +11,7 @@ export default function App() {
     const [seCompara, setSeCompara] = useState(0)
     const [poke, setPoke] = useState([])
     const [unNombre, setUnNombre] = useState("151")
+    const [esteOtroNombre, setEsteOtroNombre] = useState("151")
 
     let mat = []
 
@@ -18,19 +19,24 @@ export default function App() {
         // Llamamos a la API Pokeapi
         const charactersAPI = PokedexServicio.getAllCharacters()
                 .then((data) => {
-                    setPoke(data.results)
-                    mat = data.results
-                    setUnNombre(mat.filter((d, i) => i == elije).name)
+                    setPoke(data.results);
+                    mat = data.results;
+                    const caden1 = mat.filter((d, i) => i == elije)[0].name
+                    const caden2 = mat.filter((d, i) => i == cntOtro)[0].name
+                    setUnNombre(caden1)
+                    setEsteOtroNombre(caden2)
+                    return data.results;
                 })
                 .catch((error) => console.log(error));
 
-    }, []);
+    }, [elije, cntOtro]);
 
     function diceElBoton(evento) {
 
         let seCargo = evento.target;
         (elije + cntOtro) % 2 == 0 ? setElije(elije + 1) : setCntOtro(cntOtro + 1)
         setSeCompara(seCargo.name)
+        console.log(unNombre)
     }
 
     return (<>
@@ -58,7 +64,7 @@ export default function App() {
     
     <td>
     
-    <CardPresenter info={poke !== null ? "pikachu" : "moltres" } juega="2" opcion={seCompara}/>
+    <CardPresenter info={esteOtroNombre} juega="2" opcion={seCompara}/>
     
     </td>
     </tr>

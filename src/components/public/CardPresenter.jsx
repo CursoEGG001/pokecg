@@ -17,7 +17,6 @@ export default function CardPresenter(props) {
                 })
                 .catch((e) => console.log(e.message))
 
-
     }, [dat])
 
     function CardInfo() {
