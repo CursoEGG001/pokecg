@@ -36,20 +36,20 @@ export default function App() {
         let seCargo = evento.target;
         (elije + cntOtro) % 2 == 0 ? setElije(elije + 1) : setCntOtro(cntOtro + 1)
         setSeCompara(seCargo.name)
-        console.log(unNombre)
+
     }
 
     return (<>
     <table>
         <thead>
             <tr>
-                <td>
+                <th>
                     Estoy con :
-                </td>
-                <td>Acciones</td>
-                <td>
+                </th>
+                <th>Acciones</th>
+                <th>
                     Esto Serían los otros :
-                </td>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -59,7 +59,7 @@ export default function App() {
     </td>
     
     <td>
-        ___________
+    <TextoAlusivo />
     </td>
     
     <td>
@@ -112,3 +112,9 @@ function Cartas( {item, mostrar}) {
             );
 }
 
+function TextoAlusivo() {
+    return (
+            <>
+            <h2>Texto Alusivo de situación</h2>
+            </>)
+}

@@ -1,4 +1,47 @@
-table, th, td {
+table{
+    display: table;
+    border: lavenderblush .29em ridge;
+    padding: .7em .4em;
+    margin: .32em;
+}
+
+th {
+    display: table-cell;
+    border: lightgoldenrodyellow .29em groove;
+    color: #225a8e;
+    text-shadow:
+        .15em .14em white,
+        .21em 0.2em .1em grey,
+        .33em 0.22em 0.2em gray;
+    padding: .7em .4em;
+    margin: 2em;
+    text-justify: auto;
+    background: linear-gradient(
+        45deg,
+        #e89292,
+        #e39c62,
+        #edde8a,
+        #a7eb8c,
+        #83e3d4,
+        #8a98df,
+        #ccafed,
+        #ea7ad2,
+        #ca8787
+        );
+    position: relative;
+    top: -2px;
+    left: -2px;
+    background-size: 1600%;
+    filter: blur(.032rem);
+    -webkit-filter: blur(.027em);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing-button-85 121s ease-in infinite;
+    border-radius: 4px;
+}
+
+td {
+    display: table-cell;
     text-shadow:
         5px 3px #225a8e,
         1px 0 1em grey,
