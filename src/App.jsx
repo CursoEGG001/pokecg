@@ -119,16 +119,18 @@ function TextoAlusivo() {
 
     useEffect(() => {
 
+        let q1 = async () => await PokedexServicio.getCharacterById(info1[0])
+                    .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
+                    .then((d) => setComp1(d[0].base_stat))
 
-        let q1 = PokedexServicio.getCharacterById(info1[0])
-                .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
-                .then((d) => setComp1(d[0].base_stat))
-
-        let q2 = PokedexServicio.getCharacterById(info1[1])
-                .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
-                .then((d) => setComp2(d[0].base_stat))
-
-        let w3 = (comp1 >= comp2) ? ("Gana: Izquierda " + comp1) : ("Gana: Derecha " + comp2)
+        let q2 = async () => await PokedexServicio.getCharacterById(info1[1])
+                    .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
+                    .then((d) => setComp2(d[0].base_stat))
+            
+        q1()
+        q2()
+        
+        let w3 = (comp1 >= comp2) ? (info1[2]+" Izquierda " + comp1) : (comp2 + " Derecha " + info1[2])
 
         setQuienGana(w3)
     }, [info1]);
