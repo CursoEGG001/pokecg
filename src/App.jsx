@@ -2,7 +2,7 @@ import './App.css'
 import {useState, useEffect, useContext} from 'react'
 import PokedexServicio from './services/pokemon-api'
 import CardPresenter from './components/public/CardPresenter'
-
+import {CardContext} from './components/public/CardContext'
 
 export default function App() {
 
@@ -28,9 +28,7 @@ export default function App() {
                     return data.results;
                 })
                 .catch((error) => console.log(error));
-
     }, [elije, cntOtro]);
-
     function diceElBoton(evento) {
 
         let seCargo = evento.target;
@@ -59,7 +57,10 @@ export default function App() {
     </td>
     
     <td>
-    <TextoAlusivo />
+    <CardContext.Provider value={[elije, cntOtro, seCompara]}>
+        <TextoAlusivo />
+    </CardContext.Provider>
+    
     </td>
     
     <td>
@@ -105,16 +106,35 @@ function Cartas( {item, mostrar}) {
                     <strong>{a.name}</strong>
                 </li>
                 ));
-
-
     return (
             <>{resultado}</>
             );
 }
 
 function TextoAlusivo() {
+    const info1 = useContext(CardContext)
+    const[comp1, setComp1] = useState("")
+    const[comp2, setComp2] = useState("")
+    const[quienGana, setQuienGana] = useState("")
+
+    useEffect(() => {
+
+
+        let q1 = PokedexServicio.getCharacterById(info1[0])
+                .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
+                .then((d) => setComp1(d[0].base_stat))
+
+        let q2 = PokedexServicio.getCharacterById(info1[1])
+                .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
+                .then((d) => setComp2(d[0].base_stat))
+
+        let w3 = (comp1 >= comp2) ? ("Gana: Izquierda " + comp1) : ("Gana: Derecha " + comp2)
+
+        setQuienGana(w3)
+    }, [info1]);
+
     return (
             <>
-            <h2>Texto Alusivo de situación</h2>
+            <h2>{quienGana}</h2>
             </>)
 }

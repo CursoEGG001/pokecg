@@ -4,4 +4,4 @@
  */
 import { createContext } from 'react';
 
-export const CardContext = createContext([]);
+export const CardContext = createContext(["1_","2_"]);

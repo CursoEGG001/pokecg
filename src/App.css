@@ -36,7 +36,7 @@ th {
     -webkit-filter: blur(.027em);
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    animation: glowing-button-85 121s ease-in infinite;
+    animation: glowing-button-85 121s ease-in-out infinite;
     border-radius: 4px;
 }
 
