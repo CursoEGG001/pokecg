@@ -27,6 +27,18 @@ th {
         #ccafed,
         #ea7ad2,
         #ca8787
+        ),
+linear-gradient(
+        205deg,
+        #e8929211,
+        #e39c6222,
+        #edde8a33,
+        #a7eb8c44,
+        #83e3d455,
+        #8a98df66,
+        #ccafed77,
+        #ea7ad288,
+        #ca878799
         );
     position: relative;
     top: -2px;
@@ -74,15 +86,15 @@ td {
 
 li {
     background: linear-gradient(
-        45deg,
+        15deg,
         #e8929222,
-        #e39c6224,
+        #e39c6204,
         #edde8a24,
-        #a7eb8c27,
+        #a7eb8c07,
         #83e3d427,
-        #8a98df27,
+        #8a98df17,
         #ccafed32,
-        #ea7ad232,
+        #ea7ad225,
         #ca878742
         );
     position: relative;

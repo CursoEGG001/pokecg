@@ -21,8 +21,8 @@ export default function App() {
                 .then((data) => {
                     setPoke(data.results);
                     mat = data.results;
-                    const caden1 = mat.filter((d, i) => i == elije)[0].name
-                    const caden2 = mat.filter((d, i) => i == cntOtro)[0].name
+                    const caden1 = () => mat.filter((d, i) => i == elije)[0].name
+                    const caden2 = () => mat.filter((d, i) => i == cntOtro)[0].name
                     setUnNombre(caden1)
                     setEsteOtroNombre(caden2)
                     return data.results;
@@ -32,7 +32,6 @@ export default function App() {
     function diceElBoton(evento) {
 
         let seCargo = evento.target;
-        (elije + cntOtro) % 2 == 0 ? setElije(elije + 1) : setCntOtro(cntOtro + 1)
         setSeCompara(seCargo.name)
 
     }
@@ -70,7 +69,10 @@ export default function App() {
     </td>
     </tr>
     <tr>
-        <td onClick={() => setElije(elije + 1) } key="1">
+        <td onClick={() => {
+                    setElije(elije + 1)
+                    setSeCompara("")
+                    } } key="1">
             <ul>
                 <Cartas 
                     item={poke}
@@ -87,8 +89,10 @@ export default function App() {
             <button name="special-defense" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Defensa Especial, {cntOtro} </button><br/>
             <button name="speed" type="submit" className="button-30" role="button" onClick={(e) => diceElBoton(e)}>{elije}, Velocidad, {cntOtro}</button><br/>
         </td>
-    
-        <td  onClick={() => setCntOtro(cntOtro + 1)} key="2">
+        <td onClick={() => {
+                    setCntOtro(cntOtro + 1)
+                    setSeCompara("")
+                    } } key="2">
             <ul>
                 <Cartas item={poke} mostrar={cntOtro}/>
             </ul>
@@ -122,21 +126,23 @@ function TextoAlusivo() {
         let q1 = async () => await PokedexServicio.getCharacterById(info1[0])
                     .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
                     .then((d) => setComp1(d[0].base_stat))
+                    .catch((error) => console.log(error));
 
         let q2 = async () => await PokedexServicio.getCharacterById(info1[1])
                     .then((d) => d.stats.filter((d) => d.stat.name === info1[2]))
                     .then((d) => setComp2(d[0].base_stat))
-            
+                    .catch((error) => console.log(error));
         q1()
         q2()
-        
-        let w3 = (comp1 >= comp2) ? (info1[2]+" Izquierda " + comp1) : (comp2 + " Derecha " + info1[2])
-
+        let w3 = (comp1 >= comp2) ? (" << Izquierda ") : (" Derecha >> ")
         setQuienGana(w3)
-    }, [info1]);
+    }
+    , [info1]);
 
     return (
             <>
+            <h4>Ganador</h4>
             <h2>{quienGana}</h2>
+            <p>{(comp1 > comp2) ? info1[2] + " " + comp1 : comp2 + " " + info1[2]}</p>
             </>)
 }
