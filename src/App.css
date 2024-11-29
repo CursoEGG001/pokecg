@@ -116,7 +116,7 @@ li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: lightgoldenrodyellow .29em groove;
+    border: lightgoldenrodyellow .29em ridge;
     color: #225a8e;
     text-shadow:
         .15em .14em white,
@@ -125,8 +125,8 @@ li {
     padding: .7em .4em;
     margin: 2em;
     text-justify: auto;
-    background: linear-gradient(
-        45deg,
+    background: conic-gradient(
+        from 45deg,
         #e89292,
         #e39c62,
         #edde8a,
@@ -164,6 +164,49 @@ li {
 .header-item, .column {
     flex: 1;
     text-align: center;
+    border: lightgoldenrodyellow .29em groove;
+    color: #225a8e;
+    text-shadow:
+        .15em .14em white,
+        .21em 0.2em .1em grey,
+        .33em 0.22em 0.2em gray;
+    padding: .7em .4em;
+    margin: 2em;
+    text-justify: auto;
+    background: linear-gradient(
+        135deg,
+        #e89292,
+        #e39c62,
+        #edde8a,
+        #a7eb8c,
+        #83e3d4,
+        #8a98df,
+        #ccafed,
+        #ea7ad2,
+        #ca8787
+        ),
+        radial-gradient(
+        circle,
+        #e8929211 0%,
+        #e39c6222 12.5%,
+        #edde8a33 25%,
+        #a7eb8c44 37.5%,
+        #83e3d455 50%,
+        #8a98df66 62.5%,
+        #ccafed77 75%,
+        #ea7ad288 87.5%,
+        #ca878799 100%
+        );
+    position: relative;
+    top: -2px;
+    left: -2px;
+    background-size: 1600%;
+    filter: blur(.032rem);
+    -webkit-filter: blur(.027em);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing-button-85 121s ease-in-out infinite;
+    border-radius: 4px;
 }
 
 .actions {
