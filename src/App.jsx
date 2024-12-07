@@ -1,109 +1,140 @@
-import './App.css'
-import {useState, useEffect, useContext} from 'react'
-import PokedexServicio from './services/pokemon-api'
-import CardPresenter from './components/public/CardPresenter'
-import {CardContext} from './components/public/CardContext'
+import './App.css';
+import { useState, useEffect, useContext } from 'react';
+import PokedexServicio from './services/pokemon-api';
+import CardPresenter from './components/public/CardPresenter';
+import { CardContext } from './components/public/CardContext';
+import PokemonName from './components/public/PokemonName';
 
 export default function App() {
 
-    const [elije, setElije] = useState(0)
-    const [cntOtro, setCntOtro] = useState(0)
-    const [seCompara, setSeCompara] = useState(0)
-    const [poke, setPoke] = useState([])
-    const [unNombre, setUnNombre] = useState("151")
-    const [esteOtroNombre, setEsteOtroNombre] = useState("151")
-    const [sel, setSel] = useState([])
+    const [poke, setPoke] = useState([]);
+    const [players, setPlayers] = useState({
+        player1: { selectedIndex: 0, name: 'Esperando...', selectedList: [] },
+        player2: { selectedIndex: 0, name: 'Esperando...', selectedList: [] }
+    });
+    const [comparisonStat, setComparisonStat] = useState('');
 
-
-    let mat = [];
-    let poneCartas = [];
-    let cuantosPoke = 0;
-
+    // Fetch Pokémon data and initialize lists
     useEffect(() => {
-        // Llamamos a la API Pokeapi
-        const charactersAPI = PokedexServicio.getAllCharacters()
-                .then((data) => {
-                    cuantosPoke = Object.values(data)?.[0]
-                    console.log("Cuantos pokemones hay:", Object.values(data)?.[0]);
-                    poneCartas = generGruposDeNumerosAlAzar(cuantosPoke, 20)
-                    setSel(poneCartas);
-                    setPoke(data.results);
-                    mat = data.results;
+        PokedexServicio.getAllCharacters()
+            .then((data) => {
+                const pokemonList = data.results;
+                setPoke(pokemonList);
 
-                    const caden1 = () => (Object.hasOwn(mat, "lenght") !== 0 ? mat.filter((d, i) => i == elije)?.[0].name : "Esperando...")
-                    const caden2 = () => (Object.hasOwn(mat, "lenght") !== 0 ? mat.filter((d, i) => i == cntOtro)?.[0].name : "Esperando...")
-                    setUnNombre(caden1)
-                    setEsteOtroNombre(caden2)
-                    return data.results;
-                })
-                .catch((error) => console.log(error));
-    }, [elije, cntOtro]);
-    function diceElBoton(evento) {
+                // Generate random lists for both players
+                const updatedPlayers = {
+                    player1: {
+                        ...players.player1,
+                        selectedList: generGruposDeNumerosAlAzar(pokemonList.length, 20)
+                    },
+                    player2: {
+                        ...players.player2,
+                        selectedList: generGruposDeNumerosAlAzar(pokemonList.length, 20)
+                    }
+                };
+                setPlayers(updatedPlayers);
+            })
+            .catch((error) => console.log(error));
+    }, []);
 
-        let seCargo = evento.target;
-        setSeCompara(seCargo.name)
+    // Update names when selections change
+    useEffect(() => {
+        if (poke.length > 0) {
+            const newPlayers = { ...players };
+            newPlayers.player1.name = poke[players.player1.selectedIndex]?.name || 'Esperando...';
+            newPlayers.player2.name = poke[players.player2.selectedIndex]?.name || 'Esperando...';
+            setPlayers(newPlayers);
+        }
+    }, [players.player1.selectedIndex, players.player2.selectedIndex, poke]);
 
-    }
+    const handlePlayerSelection = (playerKey, selectedNumber) => {
+        setPlayers(prevPlayers => {
+            const newPlayers = { ...prevPlayers };
+            const playerData = newPlayers[playerKey];
+            const listIndex = playerData.selectedList.indexOf(selectedNumber);
+
+            if (listIndex !== -1) {
+                // Rotate the list
+                const newList = [
+                    ...playerData.selectedList.slice(listIndex + 1),
+                    ...playerData.selectedList.slice(0, listIndex + 1)
+                ];
+
+                playerData.selectedList = newList;
+                playerData.selectedIndex = selectedNumber;
+            }
+
+            return newPlayers;
+        });
+    };
+
+    const handleStatSelection = (stat) => {
+        setComparisonStat(stat);
+    };
 
     return (
-            <div className="container">
-                <div className="header">
-                    <div className="header-item">Estoy con:</div>
-                    <div className="header-item">Acciones</div>
-                    <div className="header-item">Esto serían los otros:</div>
+        <div className="container">
+            <div className="header">
+                <div className="header-item">Jugador 1</div>
+                <div className="header-item">Acciones</div>
+                <div className="header-item">Jugador 2</div>
+            </div>
+            <div className="content">
+                <div className="column">
+                    <CardPresenter 
+                        info={players.player1.name} 
+                        juega="1" 
+                        opcion={comparisonStat} 
+                    />
                 </div>
-                <div className="content">
-                    <div className="column">
-                        <CardPresenter info={unNombre} juega="1" opcion={seCompara} />
-                    </div>
-            
-                    <div className="column">
-                        <CardContext.Provider value={[elije, cntOtro, seCompara]}>
-                            <TextoAlusivo />
-                        </CardContext.Provider>
-                    </div>
-            
-                    <div className="column">
-                        <CardPresenter info={esteOtroNombre} juega="2" opcion={seCompara} />
-                    </div>
+                <div className="column">
+                    <CardContext.Provider value={[
+                        players.player1.selectedIndex, 
+                        players.player2.selectedIndex, 
+                        comparisonStat
+                    ]}>
+                        <TextoAlusivo />
+                    </CardContext.Provider>
                 </div>
-                <div className="content">
-                    <div className="column" onClick={() => {
-                    setElije(elije + 1);
-                    setSeCompara("");
-                }}>
-                        <ul>
-                            <Cartas item={poke} mostrar={elije} />
-                        </ul>
-                    </div>
-            
-                    <div className="column">
-                        <div className="actions">
-                            {["hp", "attack", "defense", "special-attack", "special-defense", "speed"].map((stat) => (
-                                <button
-                                    key={stat}
-                                    name={stat}
-                                    type="button"
-                                    className="button-30"
-                                    onClick={diceElBoton}
-                                    >
-                                    {elije}, {stat.toUpperCase()}, {cntOtro}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-            
-                    <div className="column" onClick={() => {
-                    setCntOtro(cntOtro + 1);
-                    setSeCompara("");
-                }}>
-                        <ul>
-                            <Cartas item={poke} mostrar={cntOtro} />
-                        </ul>
-                    </div>
+                <div className="column">
+                    <CardPresenter 
+                        info={players.player2.name} 
+                        juega="2" 
+                        opcion={comparisonStat} 
+                    />
                 </div>
             </div>
-            );
+            <div className="content">
+                <div className="column">
+                    <Cartas 
+                        numeros={players.player1.selectedList}
+                        onNumeroSeleccionado={(num) => handlePlayerSelection('player1', num)}
+                    />
+                </div>
+                <div className="column">
+                    <div className="actions">
+                        {['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed'].map((stat) => (
+                            <button
+                                key={stat}
+                                name={stat}
+                                type="button"
+                                className="button-30"
+                                onClick={() => handleStatSelection(stat)}
+                            >
+                                {stat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="column">
+                    <Cartas 
+                        numeros={players.player2.selectedList}
+                        onNumeroSeleccionado={(num) => handlePlayerSelection('player2', num)}
+                    />
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function generGruposDeNumerosAlAzar(n, m) {
@@ -113,75 +144,77 @@ function generGruposDeNumerosAlAzar(n, m) {
 
     const grupos = [];
     for (let i = 0; i < m; i++) {
-        let numAzar = 0;
-
-        numAzar = (Math.floor(Math.random() * n) + 1);
-        grupos.push(numAzar);
+        grupos.push(Math.floor(Math.random() * n) + 1);
     }
     return grupos;
 }
 
-function Cartas( {item, mostrar})
-{
-    const resultado = item.filter((dato, indice) => (indice > mostrar) && (indice <= (mostrar + 20))).map((a) => (
-                <li key={a.url + mostrar}>
-                    <strong>{a.name}</strong>
-                </li>
-                ));
-    return (
-            <>
-            {resultado}
-            
-            </>
-            );
-}
-
 function TextoAlusivo() {
-    const info1 = useContext(CardContext);
+    const [elije1, elije2, comparisonStat] = useContext(CardContext);
     const [comp1, setComp1] = useState(null);
     const [comp2, setComp2] = useState(null);
     const [quienGana, setQuienGana] = useState("");
 
     useEffect(() => {
-        if (!info1 || !info1[2])
-            return; // Asegurarse de que `info1` y el atributo comparativo existen.
+        if (!comparisonStat)
+            return;
 
         const fetchStats = async () => {
             try {
                 const [poke1, poke2] = await Promise.all([
-                    PokedexServicio.getCharacterById(info1[0]),
-                    PokedexServicio.getCharacterById(info1[1]),
+                    PokedexServicio.getCharacterById(elije1),
+                    PokedexServicio.getCharacterById(elije2)
                 ]);
 
-                const stat1 = poke1.stats.find((stat) => stat.stat.name === info1[2])?.base_stat || 0;
-                const stat2 = poke2.stats.find((stat) => stat.stat.name === info1[2])?.base_stat || 0;
+                const stat1 = poke1.stats.find((stat) => stat.stat.name === comparisonStat)?.base_stat || 0;
+                const stat2 = poke2.stats.find((stat) => stat.stat.name === comparisonStat)?.base_stat || 0;
 
                 setComp1(stat1);
                 setComp2(stat2);
 
-                // Determinar el ganador después de obtener las estadísticas
                 setQuienGana(
-                        stat1 > stat2
-                        ? `<< Izquierda (${stat1})`
-                        : stat1 < stat2
-                        ? `Derecha (${stat2}) >>`
-                        : `Empate (${stat1})`
-                        );
+                    stat1 > stat2
+                    ? `<< Izquierda (${stat1})`
+                    : stat1 < stat2
+                    ? `Derecha (${stat2}) >>`
+                    : `Empate (${stat1})`
+                );
             } catch (error) {
                 console.error("Error al obtener estadísticas:", error);
             }
         };
 
         fetchStats();
-    }, [info1]);
+    }, [elije1, elije2, comparisonStat]);
 
     return (
-            <>
+        <>
             <h4>Ganador</h4>
             <h2>{quienGana}</h2>
             {comp1 !== null && comp2 !== null && (
-                                    <p>{info1[2]}: {comp1 > comp2 ? comp1 : comp2}</p>
-                                )}
-            </>
-            );
+                <p>{comparisonStat}: {comp1 > comp2 ? comp1 : comp2}</p>
+            )}
+        </>
+    );
 }
+
+function Cartas({ numeros, onNumeroSeleccionado }) {
+    const handleListClick = (event) => {
+        const clickedIndex = Array.from(event.currentTarget.children).indexOf(event.target.closest("li"));
+        if (clickedIndex !== -1) {
+            const clickedNumber = numeros[clickedIndex];
+            onNumeroSeleccionado(clickedNumber);
+        }
+    };
+
+    return (
+        <ul onClick={handleListClick}>
+            {numeros.map((num, index) => (
+                <li key={num + 'r' + index} data-index={index}>
+                    <PokemonName id={num} />
+                </li>
+            ))}
+        </ul>
+    );
+}
+

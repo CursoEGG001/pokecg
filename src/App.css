@@ -123,7 +123,7 @@ li {
         .21em 0.2em .1em grey,
         .33em 0.22em 0.2em gray;
     padding: .7em .4em;
-    margin: 2em;
+    margin: .22em;
     text-justify: auto;
     background: conic-gradient(
         from 45deg,
@@ -165,13 +165,13 @@ li {
     flex: 1;
     text-align: center;
     border: lightgoldenrodyellow .29em groove;
-    color: #225a8e;
+    color: #141e79;
     text-shadow:
         .15em .14em white,
         .21em 0.2em .1em grey,
         .33em 0.22em 0.2em gray;
     padding: .7em .4em;
-    margin: 2em;
+    margin: .14em;
     text-justify: auto;
     background: linear-gradient(
         135deg,
@@ -309,6 +309,11 @@ li {
 
 .card {
     padding: 2em;
+}
+.card-image {
+    filter: drop-shadow(0 -.6rem 4mm #8800bb2f);
+    will-change: filter;
+    transition: filter 300ms;
 }
 
 .read-the-docs {

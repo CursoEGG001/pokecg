@@ -7,27 +7,38 @@ export default function CardPresenter(props) {
     const [imagen, setImagen] = useState("");
     const [pokenombre, setPokenombre] = useState("");
     useEffect(() => {
-        const oneCharacter = PokedexServicio.getCharacterByName(props.info)
-                .then((data) => {
-                    let obs = []
-                    obs = data
-                    setImagen(obs.sprites.front_default)
-                    setPokenombre(obs.name)
-                    setDat(obs.stats)
-                })
-                .catch((e) => console.log(e.message))
+        let isMounted = true;
 
-    }, [dat])
+        PokedexServicio.getCharacterByName(props.info)
+                .then((data) => {
+                    if (isMounted) {
+                        setImagen(data.sprites.front_default);
+                        setPokenombre(data.name);
+                        setDat(data.stats);
+                    }
+                })
+                .catch((e) => console.log(e.message));
+
+        return () => {
+            isMounted = false;
+        };
+    }, [props.info]);
 
     function CardInfo() {
         return(
                 <>
                 <h3>{pokenombre}</h3>
-                <img src={imagen} alt={pokenombre} height="auto" width="100%"/>
+                <img className="card-image" src={imagen} alt={pokenombre} height="auto" width="100%"/>
                 <ul>
-                    {dat.filter((laOpcion) => laOpcion.stat.name == props.opcion).map(
-                                d => <li key={d.stat.url}>{d.stat.name}:{d.base_stat}</li>
-                        )}
+                    {dat
+                                .filter((laOpcion) => props.opcion && laOpcion.stat.name === props.opcion)
+                                .map((d) => (
+                                                <li key={d.stat.url}>
+                                                    {d.stat.name}: {d.base_stat}
+                                                </li>
+                                            )
+                                )
+                    }
                 </ul>
                 </>
                 )
@@ -39,4 +50,6 @@ export default function CardPresenter(props) {
             <CardInfo/>
             </>
             )
+
 }
+
