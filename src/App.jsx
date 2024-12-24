@@ -1,49 +1,111 @@
+/* global PropTypes */
+
+/**
+ * @fileoverview Pokemon card battle game implementation where players compare Pokemon stats.
+ * @author pc
+ * @version 1.0.0 
+ */
+
 import './App.css';
 import { useState, useEffect, useRef, useContext } from 'react'; // Import useRef
 import PokedexServicio from './services/pokemon-api';
 import CardPresenter from './components/public/CardPresenter';
 import { CardContext } from './components/public/CardContext';
 import PokemonName from './components/public/PokemonName';
+import PropTypes from 'prop-types';
+
+/**
+ * Cache for storing randomly generated Pokemon lists
+ * @type {Map<string, Array<number>>}
+ */
 
 const RANDOM_LISTS_CACHE = new Map(); // Cache para números al azar
 
+/**
+ * @typedef {Object} PlayerState
+ * @property {number} selectedIndex - indice del pokemon actualmente elegido
+ * @property {string} name - nombre del pokemon elegido
+ * @property {Array<number>} selectedList - Lista de Pokemon elegidos por indice
+ */
+
+/**
+ * @typedef {Object} Players
+ * @property {PlayerState} player1 - estado para player 1
+ * @property {PlayerState} player2 - estado para player 2
+ */
+
+/**
+ * component principal para juego de batalla de Pokemon
+ * @component
+ * @returns {JSX.Element} Renderizado de la app.
+ */
+
 export default function App() {
+
+    /**
+     * State hook para Pokemon data
+     * @type {[Array<Object>, Function]}
+     */
     const [poke, setPoke] = useState([]);
+
+    /**
+     * State hook para información del jugador
+     * @type {[Players, Function]}
+     */
     const [players, setPlayers] = useState({
         player1: {selectedIndex: 0, name: 'Esperando...', selectedList: []},
         player2: {selectedIndex: 0, name: 'Esperando...', selectedList: []}
     });
+
+
     const [comparisonStat, setComparisonStat] = useState('');
+
+    /**
+     * Referencia para guardar lista de pokemones
+     * @type {React.MutableRefObject<Array<Object>>}
+     */
     const pokemonListRef = useRef(null); // Ref para guardar pokemonList
 
-    // Traer datos de Pokémon e inicializar lista
-    useEffect(() => {
-        const fetchPokemonData = async () => {
-            try {
-                const data = await PokedexServicio.getAllCharacters();
-                const pokemonList = data.results;
-                setPoke(pokemonList);
-                pokemonListRef.current = pokemonList; // Guarda ref
+    /**
+     * Traer datos de Pokémon e inicializar lista
+     * @async
+     * @throws {Error} When API fetch fails
+     * @returns {Promise<void>}
+     */
 
-                // Genera listas al azar fpara ambos jugadores listas nuevas o en cache
-                const updatedPlayers = {
-                    player1: {
-                        ...players.player1,
-                        selectedList: getCachedOrGenerateList(pokemonList.length, 20, 'player1')
-                    },
-                    player2: {
-                        ...players.player2,
-                        selectedList: getCachedOrGenerateList(pokemonList.length, 20, 'player2')
-                    }
-                };
-                setPlayers(updatedPlayers);
-            } catch (error) {
-                console.error("Error fetching Pokemon data:", error);
-            }
-        };
+
+    // Traer datos de Pokémon e inicializar lista
+
+    const fetchPokemonData = async () => {
+        try {
+            const data = await PokedexServicio.getAllCharacters();
+            const pokemonList = data.results;
+            setPoke(pokemonList);
+            pokemonListRef.current = pokemonList; // Guarda ref
+
+            // Genera listas al azar fpara ambos jugadores listas nuevas o en cache
+            const updatedPlayers = {
+                player1: {
+                    ...players.player1,
+                    selectedList: getCachedOrGenerateList(pokemonList.length, 20, 'player1')
+                },
+                player2: {
+                    ...players.player2,
+                    selectedList: getCachedOrGenerateList(pokemonList.length, 20, 'player2')
+                }
+            };
+            setPlayers(updatedPlayers);
+        } catch (error) {
+            console.error("Error fetching Pokemon data:", error);
+        }
+    };
+
+    useEffect(() => {
 
         fetchPokemonData();
     }, []);
+
+
 
     const getCachedOrGenerateList = (n, m, playerKey) => {
         if (RANDOM_LISTS_CACHE.has(playerKey)) {
@@ -155,6 +217,14 @@ export default function App() {
             );
 }
 
+
+/**
+ * Generates random numbers within a range
+ * @param {number} n - Upper bound of range (exclusive)
+ * @param {number} m - Number of random numbers to generate
+ * @throws {Error} If n is less than m
+ * @returns {Array<number>} Array of random numbers
+ */
 function generGruposDeNumerosAlAzar(n, m) {
     if (n < m) {
         throw new Error('n tiene que ser mayor o igual a m');
@@ -167,6 +237,12 @@ function generGruposDeNumerosAlAzar(n, m) {
     return grupos;
 }
 
+
+/**
+ * Componente para mostrar resultado de la batalla
+ * @component
+ * @returns {JSX.Element} Renderiza el resultado de la comparación
+ */
 function TextoAlusivo() {
     const [elije1, elige2, comparisonStat] = useContext(CardContext);
     const [comp1, setComp1] = useState(null);
@@ -193,7 +269,7 @@ function TextoAlusivo() {
     }, [comparisonStat]);
 
     useEffect(() => {
-        // Calculate winner only if comparisonStat, elige1, elige2, and pokemon data are available
+        // Calcula ganador solo si comparisonStat, elije1, elige2, y data del pokemon están disponibles.
         if (comparisonStat && elije1 && elige2 && Object.keys(pokemonData).length > 0) {
             const stat1 = pokemonData[elije1]?.stats?.find((stat) => stat.stat.name === comparisonStat)?.base_stat || 0;
             const stat2 = pokemonData[elige2]?.stats?.find((stat) => stat.stat.name === comparisonStat)?.base_stat || 0;
@@ -223,7 +299,22 @@ function TextoAlusivo() {
             );
 }
 
+/**
+ * Muestra la lista de Cartas de Pokemon
+ * @component
+ * @param {Object} props - propiedades de componentes
+ * @param {Array<number>} numeros - Lista de indices de Pokemon
+ * @param {Function} onNumeroSeleccionado - Callback para selección de Carta
+ * @returns {JSX.Element} Render de la lista
+ * 
+ */
 function Cartas( { numeros, onNumeroSeleccionado }) {
+
+    /**
+     * Handles click events on the card list
+     * @param {Event} event - Click event object
+     * @returns {void}
+     */
     const handleListClick = (event) => {
         const clickedIndex = Array.from(event.currentTarget.children).indexOf(event.target.closest("li"));
         if (clickedIndex !== -1) {
@@ -231,6 +322,7 @@ function Cartas( { numeros, onNumeroSeleccionado }) {
             onNumeroSeleccionado(clickedNumber);
         }
     };
+
 
     return (
             <ul onClick={handleListClick}>
@@ -242,3 +334,13 @@ function Cartas( { numeros, onNumeroSeleccionado }) {
             </ul>
             );
 }
+
+/**
+ * PropTypes para componente Cartas
+ */
+Cartas.propTypes = {
+    /** Arreglo de indices de Pokemon */
+    numeros: PropTypes.arrayOf(PropTypes.number).isRequired,
+    /** funcion Callback para selección de cartas */
+    onNumeroSeleccionado: PropTypes.func.isRequired
+};
